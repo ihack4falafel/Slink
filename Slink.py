@@ -259,22 +259,22 @@ def main():
 
 	for item in ShellcodeFormatted:
 		print '[' +G+ '+' +W+ '] Encoding [%s]..' %item
-		time.sleep(3)
+		time.sleep(1)
 		TwoBytes = [item[i:i+2] for i in range(0, len(item), 2)]
 		# if this is true go to AltEncoder1
 		if any(i == '01' for i in list(TwoBytes)):
 			print '[' +R+ '!' +W+'] [' +O+ '01' +W+ '] found in shellcode, using alterantive encoder..'
-			time.sleep(3)
+			time.sleep(1)
 			AltEncoder1(item, FirstAdd, SecondAdd, ThirdAdd)
 		# if this is true go to AltEncoder2
 		elif any(i == 'f' for i in list(item)):
 			print '[' +R+ '!' +W+ '] [' +O+ 'f' +W+ '] found in shellcode, using alterantive encoder..'
-			time.sleep(3)
+			time.sleep(1)
 			AltEncoder2(item, FirstAdd, SecondAdd, ThirdAdd)
 		# if this is true go to DefaultEncoder
 		else:
 			print '[' +G+ '+' +W+ '] [' +O+ 'f' +W+ '] and [' +O+ '01' +W+ '] not found, using default encoder..'
-			time.sleep(3)
+			time.sleep(1)
 			DefaultEncoder(item, FirstAdd, SecondAdd)
 
 if __name__ == '__main__':
