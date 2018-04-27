@@ -189,17 +189,17 @@ def main():
 		TwoBytes = [item[i:i+2] for i in range(0, len(item), 2)]
 		# if this is true go to AltEncoder
 		if any(i == '01' for i in list(TwoBytes)):
-			print '[' +R+ '!' +W+'] [' +O+ '01' +W+ '] and/or [' +O+ 'f' +W+ '] found in shellcode, using alterantive encoder..'
+			print '[' +R+ '!' +W+'] [' +O+ '01' +W+ '] and/or [' +O+ 'f' +W+ '] found, using alterantive encoder..'
 			time.sleep(1)
 			AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd)
 		# if this is true go to AltEncoder
 		elif any(i == 'f' for i in list(item)):
-			print '[' +R+ '!' +W+'] [' +O+ '01' +W+ '] and/or [' +O+ 'f' +W+ '] found in shellcode, using alterantive encoder..'
+			print '[' +R+ '!' +W+'] [' +O+ '01' +W+ '] and/or [' +O+ 'f' +W+ '] found, using alterantive encoder..'
 			time.sleep(1)
 			AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd)
 		# if this is true go to DefaultEncoder
 		else:
-			print '[' +G+ '+' +W+ '] [' +O+ 'f' +W+ '] and [' +O+ '01' +W+ '] not found, using default encoder..'
+			print '[' +G+ '+' +W+ '] [' +O+ '01' +W+ '] and [' +O+ 'f' +W+ '] not found, using default encoder..'
 			time.sleep(1)
 			DefaultEncoder(item, FirstAdd, SecondAdd)
 
