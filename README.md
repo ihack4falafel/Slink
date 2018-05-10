@@ -7,7 +7,7 @@ Slink is an Alphanumeric shellcode (x86) encoder that reformat characters beyond
 
 - [x] Encode using `01-7f` characters set.
 - [x] Execuled common bad characters by default `\x00\x10\x0a\x0d`.
-- [x] Check shellcode size and make sure its divisable by 4, otherwise pad with `\x90`.
+- [x] Check shellcode size and make sure its divisible by 4, otherwise pad with `\x90`.
 - [x] Accepet mutiple shellcode formats as input.
 - [ ] Output encoded shellcode.
 
