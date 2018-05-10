@@ -11,7 +11,8 @@ Slink is an Alphanumeric shellcode (x86) encoder that reformat characters beyond
 - [x] Accepet mutiple shellcode formats as input.
 - [ ] Output encoded shellcode.
 
-# Demo
+The following is demo of Slink in action.
+
 <p align="center">
   <img  src="https://github.com/ihack4falafel/Slink/blob/master/PoC.gif">
 </p>
