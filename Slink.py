@@ -25,11 +25,11 @@ import sys
 import time
 
 # colors
-W = '\033[0m'  # white
-R = '\033[31m' # red
-G = '\033[32m' # green
-O = '\033[33m' # orange
-
+W  = '\033[0m'  # white
+R  = '\033[91m' # Light Red
+G  = '\033[92m' # Light Green
+O  = '\033[33m' # orange
+LG = '\033[37m' # Light Gray
 
 # This is an alternative encoder function if [01] and/or [f] and/or [00] found
 def AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd):
@@ -98,13 +98,23 @@ def AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd):
 			FirstAdd   += "7"
     			SecondAdd  += "6"
 			ThirdAdd   += "5"
-	print 'and  eax, 0x554e4d4a'
-	print 'and  eax, 0x2a313235'
-	print 'add  eax, 0x' + FirstAdd
-	print 'add  eax, 0x' + SecondAdd
-	print 'add  eax, 0x' + ThirdAdd
-	print 'sub  eax, 0x33333333'
-	print 'push eax'
+	#print 'and  eax, 0x554e4d4a'
+	#print 'and  eax, 0x2a313235'
+	#print 'add  eax, 0x' + FirstAdd
+	#print 'add  eax, 0x' + SecondAdd
+	#print 'add  eax, 0x' + ThirdAdd
+	#print 'sub  eax, 0x33333333'
+	#print 'push eax'
+	FirstAdd  = [FirstAdd[i:i+2] for i in range(0, len(FirstAdd), 2)]
+	SecondAdd = [SecondAdd[i:i+2] for i in range(0, len(SecondAdd), 2)]
+	ThirdAdd = [ThirdAdd[i:i+2] for i in range(0, len(ThirdAdd), 2)]
+	print 'buffer += "'+LG+'\\x25\\x4A\\x4D\\x4E\\x55'+W+'" ## and  eax, 0x554e4d4a'
+	print 'buffer += "'+LG+'\\x25\\x35\\x32\\x31\\x2A'+W+'" ## and  eax, 0x2a313235'
+	print 'buffer += "'+LG+'\\x05\\x'+FirstAdd[3]+'\\x'+FirstAdd[2]+'\\x'+FirstAdd[1]+'\\x'+FirstAdd[0]+W+'" ## add  eax, 0x'+FirstAdd[0]+FirstAdd[1]+FirstAdd[2]+FirstAdd[3]
+	print 'buffer += "'+LG+'\\x05\\x'+SecondAdd[3]+'\\x'+SecondAdd[2]+'\\x'+SecondAdd[1]+'\\x'+SecondAdd[0]+W+'" ## add  eax, 0x'+SecondAdd[0]+SecondAdd[1]+SecondAdd[2]+SecondAdd[3]
+	print 'buffer += "'+LG+'\\x05\\x'+ThirdAdd[3]+'\\x'+ThirdAdd[2]+'\\x'+ThirdAdd[1]+'\\x'+ThirdAdd[0]+W+'" ## add  eax, 0x'+ThirdAdd[0]+ThirdAdd[1]+ThirdAdd[2]+ThirdAdd[3]
+	print 'buffer += "'+LG+'\\x2D\\x33\\x33\\x33\\x33'+W+'" ## sub  eax, 0x33333333'
+	print 'buffer += "'+LG+'\\x50'+W+'"                 ## push eax'
 
 # This is default encoder function if none of 8 bytes chuncks have [f] or [01] or [00]
 def DefaultEncoder(item, FirstAdd, SecondAdd):
@@ -154,11 +164,13 @@ def DefaultEncoder(item, FirstAdd, SecondAdd):
 		elif i == 'e':
                        	FirstAdd   += "7"
 			SecondAdd  += "7"
-	print 'and  eax, 0x554e4d4a'
-	print 'and  eax, 0x2a313235'
-	print 'add  eax, 0x' + FirstAdd
-	print 'add  eax, 0x' + SecondAdd
-	print 'push eax'
+	FirstAdd  = [FirstAdd[i:i+2] for i in range(0, len(FirstAdd), 2)]
+	SecondAdd = [SecondAdd[i:i+2] for i in range(0, len(SecondAdd), 2)]
+	print 'buffer += "'+LG+'\\x25\\x4A\\x4D\\x4E\\x55'+W+'" ## and  eax, 0x554e4d4a'
+	print 'buffer += "'+LG+'\\x25\\x35\\x32\\x31\\x2A'+W+'" ## and  eax, 0x2a313235'
+	print 'buffer += "'+LG+'\\x05\\x'+FirstAdd[3]+'\\x'+FirstAdd[2]+'\\x'+FirstAdd[1]+'\\x'+FirstAdd[0]+W+'" ## add  eax, 0x'+FirstAdd[0]+FirstAdd[1]+FirstAdd[2]+FirstAdd[3]
+	print 'buffer += "'+LG+'\\x05\\x'+SecondAdd[3]+'\\x'+SecondAdd[2]+'\\x'+SecondAdd[1]+'\\x'+SecondAdd[0]+W+'" ## add  eax, 0x'+SecondAdd[0]+SecondAdd[1]+SecondAdd[2]+SecondAdd[3]
+	print 'buffer += "'+LG+'\\x50'+W+'"                 ## push eax'
 
 def main():
 	
@@ -173,10 +185,10 @@ def main():
 	# 12: bb 5d 2b 86 7c          mov    ebx,0x7c862b5d    # move the pointer to WinExec() [located at 0x7c862b5d in kernel32.dll (via arwin.exe) on WinXP SP3] into ebx
 	# 17: ff d3                   call   ebx               # call WinExec()
 
-	#Shellcode = ("\x33\xc0\x50\x68\x2e\x65\x78\x65\x68\x63\x61\x6C\x63\x8b\xc4\x6a\x01\x50\xbb\x5d\x2b\x86\x7c\xff\xd3\x90\x90\x90")
+	#Shellcode = ("\x33\xc0\x50\x68\x2e\x65\x78\x65\x68\x63\x61\x6C\x63\x8b\xc4\x6a\x01\x50\xbb\x5d\x2b\x86\x7c\xff\xd3")
 
 	# take shellcode as raw input
-	Shellcode = raw_input("Enter your shellcode: ")
+	Shellcode = raw_input("Enter your shellcode: ").lower()
 	Shellcode = Shellcode.replace("\\x","")
 	Shellcode = Shellcode.replace("'","")
 	Shellcode = Shellcode.replace('"',"")
