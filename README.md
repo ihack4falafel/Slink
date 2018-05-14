@@ -3,7 +3,7 @@
 </p>
 
 # 
-Slink is an Alphanumeric shellcode (x86) encoder that reformat characters beyond `7f` using simple math operations. This tool was inspired by the following sploit [EDB-ID: 44455](https://exploit-db.com/exploits/44455/). Here's the list of current features:
+Slink is an alphanumeric shellcode (x86) encoder that use simple math operations to reformat characters beyond `7f`. The tool creation was inspired by the following sploit [EDB-ID: 44455](https://exploit-db.com/exploits/44455/). The following are list of current features:
 
 - Encode using `01-7f` characters set.
 - Exclude common bad characters by default `\x00\x10\x0a\x0d`.
@@ -11,7 +11,7 @@ Slink is an Alphanumeric shellcode (x86) encoder that reformat characters beyond
 - Accept mutiple shellcode formats as input.
 - Output encoded shellcode.
 
-The following is demo of Slink in action.
+Watch Slink in action.
 
 <p align="center">
   <img  src="https://github.com/ihack4falafel/Slink/blob/master/Demo.gif">
