@@ -1,5 +1,5 @@
 <p align="center">
-  <img  highet=200 width=300 src="https://github.com/ihack4falafel/Slink/blob/master/_Logo_.png">
+  <img  highet=150 width=150 src="https://github.com/ihack4falafel/Slink/blob/master/_Logo_.png">
 </p>
 
 # 
