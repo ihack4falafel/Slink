@@ -31,7 +31,7 @@ G  = '\033[92m' # Light Green
 O  = '\033[33m' # orange
 LG = '\033[37m' # Light Gray
 
-# This is an alternative encoder function if [01] and/or [f] and/or [00] found
+# This is an alternative encoder function if one of the following bad characters [00,01,10,11,f] is found
 def AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd):
 	for i in list(item):
 		if i == '0':
@@ -98,25 +98,19 @@ def AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd):
 			FirstAdd   += "7"
     			SecondAdd  += "6"
 			ThirdAdd   += "5"
-	#print 'and  eax, 0x554e4d4a'
-	#print 'and  eax, 0x2a313235'
-	#print 'add  eax, 0x' + FirstAdd
-	#print 'add  eax, 0x' + SecondAdd
-	#print 'add  eax, 0x' + ThirdAdd
-	#print 'sub  eax, 0x33333333'
-	#print 'push eax'
+
 	FirstAdd  = [FirstAdd[i:i+2] for i in range(0, len(FirstAdd), 2)]
 	SecondAdd = [SecondAdd[i:i+2] for i in range(0, len(SecondAdd), 2)]
 	ThirdAdd = [ThirdAdd[i:i+2] for i in range(0, len(ThirdAdd), 2)]
-	print 'buffer += "'+LG+'\\x25\\x4A\\x4D\\x4E\\x55'+W+'" ## and  eax, 0x554e4d4a'
-	print 'buffer += "'+LG+'\\x25\\x35\\x32\\x31\\x2A'+W+'" ## and  eax, 0x2a313235'
-	print 'buffer += "'+LG+'\\x05\\x'+FirstAdd[3]+'\\x'+FirstAdd[2]+'\\x'+FirstAdd[1]+'\\x'+FirstAdd[0]+W+'" ## add  eax, 0x'+FirstAdd[0]+FirstAdd[1]+FirstAdd[2]+FirstAdd[3]
-	print 'buffer += "'+LG+'\\x05\\x'+SecondAdd[3]+'\\x'+SecondAdd[2]+'\\x'+SecondAdd[1]+'\\x'+SecondAdd[0]+W+'" ## add  eax, 0x'+SecondAdd[0]+SecondAdd[1]+SecondAdd[2]+SecondAdd[3]
-	print 'buffer += "'+LG+'\\x05\\x'+ThirdAdd[3]+'\\x'+ThirdAdd[2]+'\\x'+ThirdAdd[1]+'\\x'+ThirdAdd[0]+W+'" ## add  eax, 0x'+ThirdAdd[0]+ThirdAdd[1]+ThirdAdd[2]+ThirdAdd[3]
-	print 'buffer += "'+LG+'\\x2D\\x33\\x33\\x33\\x33'+W+'" ## sub  eax, 0x33333333'
-	print 'buffer += "'+LG+'\\x50'+W+'"                 ## push eax'
+	print VarName + ' += "'+LG+'\\x25\\x4A\\x4D\\x4E\\x55'+W+'" ## and  eax, 0x554e4d4a'
+	print VarName + ' += "'+LG+'\\x25\\x35\\x32\\x31\\x2A'+W+'" ## and  eax, 0x2a313235'
+	print VarName + ' += "'+LG+'\\x05\\x'+FirstAdd[3]+'\\x'+FirstAdd[2]+'\\x'+FirstAdd[1]+'\\x'+FirstAdd[0]+W+'" ## add  eax, 0x'+FirstAdd[0]+FirstAdd[1]+FirstAdd[2]+FirstAdd[3]
+	print VarName + ' += "'+LG+'\\x05\\x'+SecondAdd[3]+'\\x'+SecondAdd[2]+'\\x'+SecondAdd[1]+'\\x'+SecondAdd[0]+W+'" ## add  eax, 0x'+SecondAdd[0]+SecondAdd[1]+SecondAdd[2]+SecondAdd[3]
+	print VarName + ' += "'+LG+'\\x05\\x'+ThirdAdd[3]+'\\x'+ThirdAdd[2]+'\\x'+ThirdAdd[1]+'\\x'+ThirdAdd[0]+W+'" ## add  eax, 0x'+ThirdAdd[0]+ThirdAdd[1]+ThirdAdd[2]+ThirdAdd[3]
+	print VarName + ' += "'+LG+'\\x2D\\x33\\x33\\x33\\x33'+W+'" ## sub  eax, 0x33333333'
+	print VarName + ' += "'+LG+'\\x50'+W+'"                 ## push eax'
 
-# This is default encoder function if none of 8 bytes chuncks have [f] or [01] or [00]
+# This is default encoder function if none of 8 bytes chuncks have one of the following bad characters [00,01,10,11,f]
 def DefaultEncoder(item, FirstAdd, SecondAdd):
 	for i in list(item):
 		if i == '0':
@@ -166,32 +160,25 @@ def DefaultEncoder(item, FirstAdd, SecondAdd):
 			SecondAdd  += "7"
 	FirstAdd  = [FirstAdd[i:i+2] for i in range(0, len(FirstAdd), 2)]
 	SecondAdd = [SecondAdd[i:i+2] for i in range(0, len(SecondAdd), 2)]
-	print 'buffer += "'+LG+'\\x25\\x4A\\x4D\\x4E\\x55'+W+'" ## and  eax, 0x554e4d4a'
-	print 'buffer += "'+LG+'\\x25\\x35\\x32\\x31\\x2A'+W+'" ## and  eax, 0x2a313235'
-	print 'buffer += "'+LG+'\\x05\\x'+FirstAdd[3]+'\\x'+FirstAdd[2]+'\\x'+FirstAdd[1]+'\\x'+FirstAdd[0]+W+'" ## add  eax, 0x'+FirstAdd[0]+FirstAdd[1]+FirstAdd[2]+FirstAdd[3]
-	print 'buffer += "'+LG+'\\x05\\x'+SecondAdd[3]+'\\x'+SecondAdd[2]+'\\x'+SecondAdd[1]+'\\x'+SecondAdd[0]+W+'" ## add  eax, 0x'+SecondAdd[0]+SecondAdd[1]+SecondAdd[2]+SecondAdd[3]
-	print 'buffer += "'+LG+'\\x50'+W+'"                 ## push eax'
+	print VarName + ' += "'+LG+'\\x25\\x4A\\x4D\\x4E\\x55'+W+'" ## and  eax, 0x554e4d4a'
+	print VarName + ' += "'+LG+'\\x25\\x35\\x32\\x31\\x2A'+W+'" ## and  eax, 0x2a313235'
+	print VarName + ' += "'+LG+'\\x05\\x'+FirstAdd[3]+'\\x'+FirstAdd[2]+'\\x'+FirstAdd[1]+'\\x'+FirstAdd[0]+W+'" ## add  eax, 0x'+FirstAdd[0]+FirstAdd[1]+FirstAdd[2]+FirstAdd[3]
+	print VarName + ' += "'+LG+'\\x05\\x'+SecondAdd[3]+'\\x'+SecondAdd[2]+'\\x'+SecondAdd[1]+'\\x'+SecondAdd[0]+W+'" ## add  eax, 0x'+SecondAdd[0]+SecondAdd[1]+SecondAdd[2]+SecondAdd[3]
+	print VarName + ' += "'+LG+'\\x50'+W+'"                 ## push eax'
 
 def main():
-	
-	# change shellcode here I used the following as an example, see the link https://www.exploit-db.com/exploits/44455/
-	# 0:  33 c0                   xor    eax,eax           # zero out eax register
-	# 2:  50                      push   eax               # push eax (null-byte) to terminate "calc.exe"
-	# 3:  68 2E 65 78 65          push   ".exe"            # push the ASCII string to the stack
-	# 8:  68 63 61 6C 63          push   "calc"            # 
-	# d:  8b c4                   mov    eax,esp           # put the pointer to the ASCII string in eax
-	# f:  6a 01                   push   0x1               # push uCmdShow parameter to the stack
-	# 11: 50                      push   eax               # push the pointer to lpCmdLine to the stack
-	# 12: bb 5d 2b 86 7c          mov    ebx,0x7c862b5d    # move the pointer to WinExec() [located at 0x7c862b5d in kernel32.dll (via arwin.exe) on WinXP SP3] into ebx
-	# 17: ff d3                   call   ebx               # call WinExec()
 
-	#Shellcode = ("\x33\xc0\x50\x68\x2e\x65\x78\x65\x68\x63\x61\x6C\x63\x8b\xc4\x6a\x01\x50\xbb\x5d\x2b\x86\x7c\xff\xd3")
+	global VarName
 
 	# take shellcode as raw input
 	Shellcode = raw_input("Enter your shellcode: ").lower()
 	Shellcode = Shellcode.replace("\\x","")
 	Shellcode = Shellcode.replace("'","")
 	Shellcode = Shellcode.replace('"',"")
+
+	VarName    = raw_input("Enter shellcode variable name: ")
+	VarName    = VarName.replace("'","")
+	VarName    = VarName.replace('"',"")
 
 	#Check the size of user provided shellcode and pad with NOPS if need be
 	ShellcodeSize = ''
@@ -234,23 +221,13 @@ def main():
 		time.sleep(1)
 		TwoBytes = [item[i:i+2] for i in range(0, len(item), 2)]
 		# if this is true go to AltEncoder
-		if any(i == '01' for i in list(TwoBytes)):
+		if any(i == '00' for i in list(TwoBytes)) or any(i == '01' for i in list(TwoBytes)) or any(i == '10' for i in list(TwoBytes)) or any(i == '11' for i in list(TwoBytes)) or any(i == 'f' for i in list(item)):
 			time.sleep(1)
-                        print '['+R+'!'+W+'] ['+O+'01'+W+'] and/or ['+O+'f'+W+'] and/or ['+O+'00'+W+'] found, using alterantive encoder..'
-			AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd)
-                # if this is true go to AltEncoder
-		if any(i == '00' for i in list(TwoBytes)):
-                        time.sleep(1)
-                        print '['+R+'!'+W+'] ['+O+'01'+W+'] and/or ['+O+'f'+W+'] and/or ['+O+'00'+W+'] found, using alterantive encoder..'
-                        AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd)
-		# if this is true go to AltEncoder
-		elif any(i == 'f' for i in list(item)):
-                        print '['+R+'!'+W+'] ['+O+'01'+W+'] and/or ['+O+'f'+W+'] and/or ['+O+'00'+W+'] found, using alterantive encoder..'
-			time.sleep(1)
+                        print '['+R+'!'+W+'] Possible bad character found, using alterantive encoder..'
 			AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd)
 		# if this is true go to DefaultEncoder
 		else:
-                        print '['+G+'+'+W+'] ['+O+'01'+W+'] and ['+O+'f'+W+'] and ['+O+'00'+W+'] not found, using default encoder..'
+                        print '['+G+'+'+W+'] No bad character found, using default encoder..'
 			time.sleep(1)
 			DefaultEncoder(item, FirstAdd, SecondAdd)
 
