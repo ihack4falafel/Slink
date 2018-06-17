@@ -23,6 +23,7 @@ Chanelog:
 Version 1.1 (June 2018)
 -----------------------
 - Add the ability to specify shellcode variable. 
+- Add final shellcode size.
 - Bug fixes.
 - Code optimazation.
 
