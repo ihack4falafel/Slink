@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # MIT License
 #
 # Copyright (c) 2018 Hashim Jawad
@@ -27,11 +27,12 @@ import time
 # colors
 W  = '\033[0m'  # white
 R  = '\033[91m' # Light Red
+B  = '\033[94m' # Light Blue
 G  = '\033[92m' # Light Green
 O  = '\033[33m' # orange
 LG = '\033[37m' # Light Gray
 
-# This is an alternative encoder function if one of the following bad characters [00,01,10,11,f] is found
+# this is an alternative encoder function if one of the following bad characters [00,01,10,11,f] is found
 def AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd):
 	for i in list(item):
 		if i == '0':
@@ -110,7 +111,7 @@ def AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd):
 	print VarName + ' += "'+LG+'\\x2D\\x33\\x33\\x33\\x33'+W+'" ## sub  eax, 0x33333333'
 	print VarName + ' += "'+LG+'\\x50'+W+'"                 ## push eax'
 
-# This is default encoder function if none of 8 bytes chuncks have one of the following bad characters [00,01,10,11,f]
+# this is default encoder function if none of 8 bytes chuncks have one of the following bad characters [00,01,10,11,f]
 def DefaultEncoder(item, FirstAdd, SecondAdd):
 	for i in list(item):
 		if i == '0':
@@ -167,7 +168,7 @@ def DefaultEncoder(item, FirstAdd, SecondAdd):
 	print VarName + ' += "'+LG+'\\x50'+W+'"                 ## push eax'
 
 def main():
-
+	
 	global VarName
 
 	# take shellcode as raw input
@@ -176,11 +177,12 @@ def main():
 	Shellcode = Shellcode.replace("'","")
 	Shellcode = Shellcode.replace('"',"")
 
+	# take shellcode name variable as raw input
 	VarName    = raw_input("Enter shellcode variable name: ")
 	VarName    = VarName.replace("'","")
 	VarName    = VarName.replace('"',"")
 
-	#Check the size of user provided shellcode and pad with NOPS if need be
+	# check the size of user provided shellcode and pad with NOPS if need be
 	ShellcodeSize = ''
 	ShellcodeSize = [Shellcode[i:i+2] for i in range(0, len(Shellcode), 2)]
 	if len(ShellcodeSize) % 4 != 0:
@@ -215,9 +217,10 @@ def main():
 	FirstAdd    = ""
 	SecondAdd   = ""
 	ThirdAdd    = ""
-
+	c1 = 0
+	c2 = 0
 	for item in ShellcodeFormatted:
-		print '[' +G+ '+' +W+ '] Encoding [%s]..' %item
+		print '[' +B+ '*' +W+ '] Encoding [%s]..' %item
 		time.sleep(1)
 		TwoBytes = [item[i:i+2] for i in range(0, len(item), 2)]
 		# if this is true go to AltEncoder
@@ -225,11 +228,17 @@ def main():
 			time.sleep(1)
                         print '['+R+'!'+W+'] Possible bad character found, using alterantive encoder..'
 			AltEncoder(item, FirstAdd, SecondAdd, ThirdAdd)
+			c1 += 1
 		# if this is true go to DefaultEncoder
 		else:
                         print '['+G+'+'+W+'] No bad character found, using default encoder..'
 			time.sleep(1)
 			DefaultEncoder(item, FirstAdd, SecondAdd)
+			c2 += 1
+
+	# calculate shellcode size (bytes)
+	ShellcodeFinalSize = ((21 * c2) + (31 * c1))
+	print '['+B+'*'+W+'] Shellcode final size: ' + str(ShellcodeFinalSize) + ' bytes'
 
 if __name__ == '__main__':
 	main()
