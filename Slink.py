@@ -190,21 +190,11 @@ def main():
 		time.sleep(1)
         	NOP = '90'
 	
-		if ((len(ShellcodeSize))+1) % 4 == 0:
-			Shellcode += "90"
-			print "["+G+"+"+W+"] Padding shellcode with 1 NOPS.."
-			time.sleep(1)		
-		elif ((len(ShellcodeSize))+2) % 4 == 0:
-			Shellcode += "90"
-			Shellcode += "90"
-			print "["+G+"+"+W+"] Padding shellcode with 2 NOPS.."
-			time.sleep(1)
-		else:
-			Shellcode += "90"
-			Shellcode += "90"
-			Shellcode += "90"
-			print "["+G+"+"+W+"] Padding shellcode with 3 NOPS.."
-			time.sleep(1)
+		nNops = 4-(len(ShellcodeSize)) % 4
+                Shellcode += "90" * nNops
+                print "["+G+"+"+W+"] Padding shellcode with "+str(nNops)+" NOPS.."
+                time.sleep(1)
+		
 	else:
 		print "["+G+"+"+W+"] Shellcode size is divisible by 4"
 		time.sleep(1)
